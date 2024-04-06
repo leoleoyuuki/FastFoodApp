@@ -96,7 +96,7 @@ export default function CarrinhoPage(props) {
 
   return (
     <ImageBackground
-      source={require("../../assets/bgimage.png")}
+      source={require("../../assets/backgroundimg.jpg")}
       style={styles.backgroundImage}
     >
       <Header />

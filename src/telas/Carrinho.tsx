@@ -7,11 +7,11 @@ import Header from "./Header";
 import { Button } from "@rneui/base";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CarrinhoPage(props) {
+export default function CarrinhoPage({navigation}) {
   const { state } = useContext(UsuarioContext);
   const dadosUsuario = state.dadosUsuario;
   const [carrinho, setCarrinho] = useState([]);
-const navigation = useNavigation();
+  // const navigation = useNavigation();
 
 
  
@@ -109,7 +109,7 @@ const navigation = useNavigation();
 
   return (
     <ImageBackground
-      source={require("../../assets/bgimage.png")}
+      source={require("../../assets/backgroundimg.jpg")}
       style={styles.backgroundImage}
     >
       <Header />
