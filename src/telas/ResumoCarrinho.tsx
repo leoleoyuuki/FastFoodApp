@@ -40,9 +40,7 @@ export default function CarrinhoPage(props) {
   };
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
-      // Aqui você pode colocar a lógica que deseja executar quando a tela for focada
-      console.log('Tela do carrinho foi focada');
-      // Exemplo de recarregar os dados do carrinho
+      console.log('Tela do resumo carrinho foi focada');
       loadCarrinho();
     });
 

@@ -7,11 +7,11 @@ import Header from "./Header";
 import { Button } from "@rneui/base";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CarrinhoPage({navigation}) {
+export default function CarrinhoPage() {
   const { state } = useContext(UsuarioContext);
   const dadosUsuario = state.dadosUsuario;
   const [carrinho, setCarrinho] = useState([]);
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
 
  

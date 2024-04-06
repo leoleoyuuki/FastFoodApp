@@ -8,20 +8,48 @@ import {
   Image,
 } from "react-native";
 import { useFonts } from 'expo-font';
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UsuarioContext from "../context/UsuarioContext";
 import { TextInput } from "react-native";
 import Header from "./Header";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 export default (props) => {
   const { state } = useContext(UsuarioContext);
   const dadosUsuario = state.dadosUsuario;
   const [carrinho,setCarrinho] = useState([])
 
-  console.log(state.dadosUsuario);
+  const navigation = useNavigation();
 
+  const loadCarrinho = async () => {
+    try {
+      setCarrinho([])
+      const carrinhoData = await AsyncStorage.getItem("carrinho");
+      if (carrinhoData) {
+        setCarrinho(JSON.parse(carrinhoData));
+        console.log(carrinhoData)
+      }
+    } catch (error) {
+      console.log("Error loading cart items", error);
+    }
+  };
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      // Aqui você pode colocar a lógica que deseja executar quando a tela for focada
+      console.log('Tela Home');
+      // Exemplo de recarregar os dados do carrinho
+      loadCarrinho();
+    });
+
+    // Retorno da função de limpeza do listener
+    return () => {
+      focusListener();
+    };
+  }, []);
+
+  
   const getComida = ({ item }) => {
 
     const addCarrinho = (item) => {
@@ -29,9 +57,10 @@ export default (props) => {
         {
           text: "Sim",
           onPress: () => {
-            setCarrinho([...carrinho,item])
+            const updatedCarrinho = [...carrinho, item];
+            setCarrinho(updatedCarrinho)
             console.log("Item adicionado ao carrinho:", item);
-            AsyncStorage.setItem("carrinho",JSON.stringify(carrinho))
+            AsyncStorage.setItem("carrinho",JSON.stringify(updatedCarrinho))
 
           },
         },
