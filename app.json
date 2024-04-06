@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "plugins":[
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/Poppins-Regular.ttf"]
+        }
+      ]
+    ],
+    "name": "useContext",
+    "slug": "useContext",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.leleoyuuki.useContext"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "10f52d60-036e-4df2-8beb-e01077e735df"
+      }
+    }
+  }
+}
