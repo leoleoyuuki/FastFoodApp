@@ -39,25 +39,15 @@ export default function App() {
 
             })}
           />
-          <Screen
-            name="Mebros"
-            component={Membros}
-            options={() => ({
-              title: "Membros",
-              headerShown: false,
-              tabBarButton: () => null, // Ocultar completamente o botão da tabBar
-
-            })}
-          />
+          
           <Screen
             name="Login"
             component={Login}
             options={() => ({
               title: "Login",
               headerShown: false,
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="people" color={color} size={size} />
-              )
+              tabBarButton: () => null, // Ocultar completamente o botão da tabBar
+
             })}
           />
           
@@ -127,6 +117,17 @@ export default function App() {
                 ),
               };
             }}
+          />
+          <Screen
+            name="Membros"
+            component={Membros}
+            options={() => ({
+              title: "Membros",
+              headerShown: false,
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="people" color={color} size={size} />
+              )
+            })}
           />
         </Navigator>
       </NavigationContainer>
