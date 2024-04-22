@@ -2,19 +2,32 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Text, TextInput, ImageBackground, StyleSheet, FlatList, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import UsuarioContext from "../context/UsuarioContext";
+import ComidaContext from "../context/ComidaContext";
 import Header from "./Header";
 import { Button } from "@rneui/base";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 export default function CarrinhoPage() {
-  const { state } = useContext(UsuarioContext);
-  const dadosUsuario = state.dadosUsuario;
+  const { state } = useContext(ComidaContext);
+  const dadosComida = state.dadosComida;
   const [carrinho, setCarrinho] = useState([]);
   const navigation = useNavigation();
 
 
- 
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkLogin = async () => {
+        const logado = await AsyncStorage.getItem("logado");
+        if (logado === null) {
+          Alert.alert("Faça o login para acessar o App!");
+          navigation.navigate("Login");
+        } else {
+          loadCarrinho();
+        }
+      };
+      checkLogin();
+    }, [])
+  );
 
 
 
@@ -128,7 +141,7 @@ export default function CarrinhoPage() {
         <View style={styles.cardapioContainer}>
           <Text style={styles.cardapioTitle}>Cardápio:</Text>
           <FlatList
-            data={dadosUsuario}
+            data={dadosComida}
             horizontal={true}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
             renderItem={renderItemDoCardapio}
