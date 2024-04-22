@@ -1,16 +1,32 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Alert, FlatList, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
-import { Button, Icon } from "@rneui/base";
-import UsuarioContext from "../context/UsuarioContext";
+import { Avatar, Button, Icon } from "@rneui/base";
+import ComidaContext from "../context/ComidaContext";
 import Header from "./Header";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 export default function CarrinhoPage(props) {
-  const { state } = useContext(UsuarioContext);
-  const dadosUsuario = state.dadosUsuario;
-  const [carrinho, setCarrinho] = useState(dadosUsuario);
+  const { state } = useContext(ComidaContext);
+  const dadosComida = state.dadosComida;
+  const [carrinho, setCarrinho] = useState(dadosComida);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkLogin = async () => {
+        const logado = await AsyncStorage.getItem("logado");
+        if (logado === null) {
+          Alert.alert("Faça o login para acessar o App!");
+          navigation.navigate("Login");
+        } else {
+          loadCarrinho();
+        }
+      };
+      checkLogin();
+    }, [])
+  );
+
 
   const alterarDescricao = (index, novaDescricao) => {
     const novoCarrinho = [...carrinho];
@@ -76,6 +92,7 @@ export default function CarrinhoPage(props) {
   const renderItemDoCarrinho = ({ item, index }) => {
     return (
       <View style={styles.itemContainer}>
+        <Avatar source={item.imagem} size="medium" />
         <Text>{item.nome}</Text>
         <TextInput
           style={styles.descricaoInput}
