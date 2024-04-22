@@ -9,6 +9,7 @@ import Carrinho from "./src/telas/Carrinho";
 import { Ionicons } from "@expo/vector-icons";
 import Cadastro from "./src/telas/Cadastro";
 import Login from "./src/telas/Login";
+import Membros from "./src/telas/Membros";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -39,13 +40,24 @@ export default function App() {
             })}
           />
           <Screen
+            name="Mebros"
+            component={Membros}
+            options={() => ({
+              title: "Membros",
+              headerShown: false,
+              tabBarButton: () => null, // Ocultar completamente o botão da tabBar
+
+            })}
+          />
+          <Screen
             name="Login"
             component={Login}
             options={() => ({
               title: "Login",
               headerShown: false,
-              tabBarButton: () => null, // Ocultar completamente o botão da tabBar
-
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="people" color={color} size={size} />
+              )
             })}
           />
           
