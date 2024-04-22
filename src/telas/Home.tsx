@@ -1,67 +1,57 @@
-import { Avatar, Button, color, Icon, ListItem, Text } from "@rneui/base";
-import {
-  Alert,
-  FlatList,
-  ImageBackground,
-  StyleSheet,
-  View,
-  Image,
-} from "react-native";
+import { Button, Text } from "@rneui/base";
+import { Alert, FlatList, ImageBackground, StyleSheet, View, Image } from "react-native";
+import React from "react";
 import { useFonts } from 'expo-font';
 import { useContext, useEffect, useState } from "react";
-import UsuarioContext from "../context/UsuarioContext";
+import ComidaContext from "../context/ComidaContext";
 import { TextInput } from "react-native";
 import Header from "./Header";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-export default (props) => {
-  const { state } = useContext(UsuarioContext);
-  const dadosUsuario = state.dadosUsuario;
-  const [carrinho,setCarrinho] = useState([])
-
+export default function Home() {
   const navigation = useNavigation();
+  const [carrinho, setCarrinho] = useState([]);
 
   const loadCarrinho = async () => {
     try {
-      setCarrinho([])
       const carrinhoData = await AsyncStorage.getItem("carrinho");
       if (carrinhoData) {
         setCarrinho(JSON.parse(carrinhoData));
-        console.log(carrinhoData)
       }
     } catch (error) {
       console.log("Error loading cart items", error);
     }
   };
-  useEffect(() => {
-    const focusListener = navigation.addListener('focus', () => {
-      // Aqui você pode colocar a lógica que deseja executar quando a tela for focada
-      console.log('Tela Home');
-      // Exemplo de recarregar os dados do carrinho
-      loadCarrinho();
-    });
 
-    // Retorno da função de limpeza do listener
-    return () => {
-      focusListener();
-    };
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkLogin = async () => {
+        const logado = await AsyncStorage.getItem("logado");
+        if (logado === null) {
+          Alert.alert("Faça o login para acessar o App!");
+          navigation.navigate("Login");
+        } else {
+          loadCarrinho();
+        }
+      };
+      checkLogin();
+    }, [])
+  );
 
-  
+  const { state } = useContext(ComidaContext);
+  const dadosComida = state.dadosComida;
+
   const getComida = ({ item }) => {
-
     const addCarrinho = (item) => {
       Alert.alert("Adicionar ao Carrinho", `Deseja adicionar ${item.nome} ao carrinho?`, [
         {
           text: "Sim",
           onPress: () => {
             const updatedCarrinho = [...carrinho, item];
-            setCarrinho(updatedCarrinho)
-            console.log("Item adicionado ao carrinho:", item);
-            AsyncStorage.setItem("carrinho",JSON.stringify(updatedCarrinho))
-
+            setCarrinho(updatedCarrinho);
+            AsyncStorage.setItem("carrinho", JSON.stringify(updatedCarrinho));
           },
         },
         {
@@ -72,42 +62,18 @@ export default (props) => {
     };
 
     return (
-      <View
-        style={{
-          backgroundColor: "#ffffff5a",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          width: 230,
-          height: 280,
-          padding: 10,
-          borderRadius: 15,
-          alignItems: "center",
-          paddingTop: 30,
-        }}
-      >
-        <Image style={{ width: 130, height: 130 }} source={item.imagem} />
-
-        <View>
-          <View style={{ gap: 5 }}>
-            <Text style={{color: "#fff"}}>{item.nome}</Text>
-            <Text style={{color: "#fff"}}>{item.descricao}</Text>
-          </View>
-
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-
-            <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>R$ {item.preco}</Text>
-
-
-            <View style={{ flexDirection: "row", justifyContent: "center" }} >
-            
-              <Button
-                style={{ backgroundColor: "#fff", padding:2 }}
-                icon={<Ionicons name="cart-outline" size={23} color="#fff" />}
-                type="clear"
-                onPress={()=>addCarrinho(item)}
-              />
-              
-            </View>
+      <View style={styles.comidaContainer}>
+        <Image style={styles.imagem} source={item.imagem} />
+        <View style={styles.textContainer}>
+          <Text style={styles.nome}>{item.nome}</Text>
+          <Text style={styles.descricao}>{item.descricao}</Text>
+          <View style={styles.precoContainer}>
+            <Text style={styles.preco}>R$ {item.preco}</Text>
+            <Button
+              icon={<Ionicons name="cart-outline" size={23} color="#fff" />}
+              type="clear"
+              onPress={() => addCarrinho(item)}
+            />
           </View>
         </View>
       </View>
@@ -118,32 +84,22 @@ export default (props) => {
     'Poppins-Regular': require('../../assets/Poppins-Regular.ttf'),
   });
 
+  if (!fontsLoaded) {
+    return null; // Se as fontes não estiverem carregadas, retornamos null para evitar renderização com fontes ausentes
+  }
+
   return (
-    <ImageBackground
-      source={require("../../assets/backgroundimg.jpg")}
-      style={styles.backgroundImage}
-    >
-
-    <Header />
-
-      <View style={{padding:12}}>
-        <View style={{ paddingTop: 20}} >
-          <Text style={styles.title} >Rápida e</Text>
-          <Text style={styles.title}><Text style={{color:"#000", fontWeight: "700"}}>Deliciosa</Text> Comida</Text>
-          
+    <ImageBackground source={require("../../assets/backgroundimg.jpg")} style={styles.backgroundImage}>
+      <Header />
+      <View style={styles.container}>
+        <View style={styles.tituloContainer}>
+          <Text style={styles.titulo}>Rápida e</Text>
+          <Text style={styles.titulo}><Text style={styles.destaque}>Deliciosa</Text> Comida</Text>
         </View>
-
-          <TextInput
-          style={{backgroundColor:"#ffffff5e",borderRadius:10,marginTop:10,padding:10, marginBottom: 30}}
-          placeholder={`Pesquisar... `} />
-
-
-          <View style={{marginBottom: 20}} >
-            <Text style={{color: "#fff", fontWeight: "800",textShadowOffset: { width: 0, height: 1   } , textShadowColor: "#edd0f8ae", textShadowRadius: 5 }}>Para você que não gosta de esperar... </Text>
-          </View>
-
+        <TextInput style={styles.input} placeholder={`Pesquisar... `} />
+        <Text style={styles.subtitulo}>Para você que não gosta de esperar...</Text>
         <FlatList
-          data={dadosUsuario}
+          data={dadosComida}
           horizontal={true}
           ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
           renderItem={getComida}
@@ -158,12 +114,71 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
   },
-  title: {
+  container: {
+    padding: 12,
+  },
+  tituloContainer: {
+    paddingTop: 20,
+  },
+  titulo: {
     fontSize: 36,
     color: "#000000",
     fontWeight: "100",
     paddingLeft: 10,
     lineHeight: 45,
     fontFamily: "Poppins-Regular",
+  },
+  destaque: {
+    color: "#000",
+    fontWeight: "700",
+  },
+  input: {
+    backgroundColor: "#ffffff5e",
+    borderRadius: 10,
+    marginTop: 10,
+    padding: 10,
+    marginBottom: 30,
+  },
+  subtitulo: {
+    color: "#fff",
+    fontWeight: "800",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowColor: "#edd0f8ae",
+    textShadowRadius: 5,
+    marginBottom: 20,
+  },
+  comidaContainer: {
+    backgroundColor: "#ffffff5a",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: 230,
+    height: 280,
+    padding: 10,
+    borderRadius: 15,
+    alignItems: "center",
+    paddingTop: 30,
+  },
+  imagem: {
+    width: 130,
+    height: 130,
+  },
+  textContainer: {
+    gap: 5,
+  },
+  nome: {
+    color: "#fff",
+  },
+  descricao: {
+    color: "#fff",
+  },
+  precoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  preco: {
+    fontSize: 19,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });
