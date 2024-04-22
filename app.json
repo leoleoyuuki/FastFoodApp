@@ -1,15 +1,17 @@
 {
   "expo": {
-    "plugins":[
+    "plugins": [
       [
         "expo-font",
         {
-          "fonts": ["./assets/Poppins-Regular.ttf"]
+          "fonts": [
+            "./assets/Poppins-Regular.ttf"
+          ]
         }
       ]
     ],
     "name": "useContext",
-    "slug": "useContext",
+    "slug": "cp2mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,8 +39,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "10f52d60-036e-4df2-8beb-e01077e735df"
+        "projectId": "84574a9b-3c70-454c-af40-8fc5ea754790"
       }
-    }
+    },
+    "owner": "leleoyuuki"
   }
 }
